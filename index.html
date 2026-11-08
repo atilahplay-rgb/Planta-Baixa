@@ -34,12 +34,16 @@ input[type=text],input[type=number],input[type=search],input:not([type]),select{
 .gl{text-align:center;font-size:11px;color:var(--muted);padding:2px 0 3px;white-space:nowrap}
 .fld{display:flex;flex-direction:column;gap:2px;font-size:11px;color:var(--muted)}.fld input,.fld select{width:130px;padding:2px 6px}.fld input[type=color]{padding:0;height:24px;width:60px;border:1px solid var(--line)}
 .two{display:flex;gap:4px}.chk{display:flex;gap:6px;align-items:center;white-space:nowrap}.hlp{max-width:420px;line-height:1.55;white-space:nowrap}
-.ddb{min-width:66px}.ddb .ic{display:block}.chev{font-style:normal;font-size:11px;line-height:1;color:var(--muted)}.ddb[aria-expanded="true"]{background:var(--hover);border-color:var(--accent)}
-.ddm{position:fixed;z-index:30;width:340px;overflow:auto;background:var(--bar);border:1px solid var(--line);border-radius:8px;box-shadow:0 8px 24px rgba(0,0,0,.35);padding:4px}
-.ddi{display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%;padding:8px 12px;border-radius:4px;text-align:left;font-size:13px}
-.ddi[aria-pressed="true"]{background:var(--hover);box-shadow:inset 3px 0 0 var(--accent)}
-.ddi .dp{width:44px;height:28px;flex:none;display:flex;align-items:center;justify-content:center}.ddi .dp svg{width:100%;height:100%;display:block}
-.dh{font-size:11px;font-weight:600;color:var(--muted);padding:8px 12px 2px}
+.ddb{min-width:66px}.ddb .ic{display:block}.chev{font-style:normal;font-size:13.75px;line-height:1;color:var(--muted)}.dl{display:flex;align-items:center;gap:3px;font-size:12px}.ddb[aria-expanded="true"]{background:var(--hover);border-color:var(--accent)}
+.ddm{position:fixed;z-index:30;width:370px;overflow:auto;background:var(--bar);border:1px solid var(--line);border-radius:10px;box-shadow:0 10px 30px rgba(0,0,0,.4);padding:6px}
+.ddi{display:flex;align-items:center;gap:12px;width:100%;padding:5px 10px;border-radius:6px;text-align:left;font-size:13px;border:1px solid transparent}
+.ddi:hover{background:var(--hover)}
+.ddi[aria-pressed="true"]{background:var(--hover);border-color:var(--accent)}
+.ddi .dp{order:-1;width:44px;height:34px;flex:none;display:flex;align-items:center;justify-content:center;border-radius:6px;background:var(--paper);border:1px solid var(--line)}
+.ddi .dp svg{width:28px;height:28px;display:block}
+.ddi .dn{flex:1;line-height:1.25}
+.ddi .nb{flex:none;min-width:30px;text-align:center;font-size:11px;color:var(--muted);border:1px solid var(--line);border-radius:10px;padding:1px 7px}
+.dh{position:sticky;top:-6px;z-index:1;background:var(--bar);font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);padding:10px 10px 4px;border-bottom:1px solid var(--line);margin-bottom:3px}
 .sep{width:1px;align-self:stretch;margin:8px 6px;background:var(--line)}
 #txt{width:120px;margin:0 4px}
 #lay{display:flex;flex-direction:column;gap:3px}#lay label{display:flex;gap:6px;align-items:center;padding:0 6px}
@@ -117,7 +121,6 @@ footer>span:first-child{flex:1;min-width:0}footer>span:last-child{white-space:no
 <div id="menu">
   <button class="mt" id="mt-file" aria-haspopup="true" aria-expanded="false">Arquivo</button>
   <button class="mt on" data-p="home">Início</button>
-  <button class="mt" data-p="ins">Inserir</button>
   <button class="mt" data-p="layout">Layout da página</button>
   <button class="mt" data-p="view">Exibir</button>
   <button class="mt" data-p="sym">Símbolos</button>
@@ -146,10 +149,14 @@ footer>span:first-child{flex:1;min-width:0}footer>span:last-child{white-space:no
   <div class="pn on" id="pn-home">
     <div class="grp"><div class="gb">
       <button class="rb" data-tool="select" title="Selecionar (V)"><span class="ic" data-ic="select"></span>Selecionar</button>
-      <button class="rb" data-tool="wall" title="Parede (W)"><span class="ic" data-ic="wall"></span>Parede</button>
-      <button class="rb" data-tool="door" title="Porta (D)"><span class="ic" data-ic="door"></span>Porta</button>
-      <button class="rb" data-tool="window" title="Janela (J)"><span class="ic" data-ic="window"></span>Janela</button>
     </div><div class="gl">Ferramentas</div></div>
+    <div class="grp"><div class="gb">
+      <button class="rb ddb" data-dd="arq" aria-haspopup="true" aria-expanded="false" title="Paredes"><span class="ic" data-ic="wall"></span><span class="dl">Paredes<i class="chev">▾</i></span></button>
+      <button class="rb ddb" data-dd="mov" aria-haspopup="true" aria-expanded="false" title="Móveis"><span class="ic" data-ic="furn"></span><span class="dl">Móveis<i class="chev">▾</i></span></button>
+      <button class="rb ddb" data-dd="ele" aria-haspopup="true" aria-expanded="false" title="Elétrica"><span class="ic" data-ic="duct"></span><span class="dl">Elétrica<i class="chev">▾</i></span></button>
+      <button class="rb ddb" data-dd="hid" aria-haspopup="true" aria-expanded="false" title="Hidráulica"><span class="ic" data-ic="pipe"></span><span class="dl">Hidráulica<i class="chev">▾</i></span></button>
+      <button class="rb ddb" data-dd="ann" aria-haspopup="true" aria-expanded="false" title="Anotações"><span class="ic" data-ic="text"></span><span class="dl">Anotações<i class="chev">▾</i></span></button>
+    </div><div class="gl">Inserir</div></div>
     <div class="grp"><div class="gb">
       <button class="rb" data-tool="furn" title="Móvel (M) — escolha o tipo na biblioteca à esquerda"><span class="ic" data-ic="furn"></span>Móvel</button>
       <button class="rb" data-tool="duct" title="Eletroduto (E) — NBR 5444"><span class="ic" data-ic="duct"></span>Eletroduto</button>
@@ -168,14 +175,6 @@ footer>span:first-child{flex:1;min-width:0}footer>span:last-child{white-space:no
       <button class="rb" id="del" title="Excluir (Delete)"><span class="ic" data-ic="del"></span>Excluir</button>
       <button class="rb" id="clr"><span class="ic" data-ic="trash"></span><span class="lb">Limpar tudo</span></button>
     </div><div class="gl">Editar</div></div>
-  </div>
-
-  <div class="pn" id="pn-ins">
-    <div class="grp"><div class="gb"><button class="rb ddb" id="dd-arq" aria-haspopup="true" aria-expanded="false"><span class="ic" data-ic="wall"></span><i class="chev">▾</i></button></div><div class="gl">Paredes e aberturas</div></div>
-    <div class="grp"><div class="gb"><button class="rb ddb" id="dd-mov" aria-haspopup="true" aria-expanded="false"><span class="ic" data-ic="furn"></span><i class="chev">▾</i></button></div><div class="gl">Móveis</div></div>
-    <div class="grp"><div class="gb"><button class="rb ddb" id="dd-ele" aria-haspopup="true" aria-expanded="false"><span class="ic" data-ic="duct"></span><i class="chev">▾</i></button></div><div class="gl">Elétrica</div></div>
-    <div class="grp"><div class="gb"><button class="rb ddb" id="dd-hid" aria-haspopup="true" aria-expanded="false"><span class="ic" data-ic="pipe"></span><i class="chev">▾</i></button></div><div class="gl">Hidráulica</div></div>
-    <div class="grp"><div class="gb"><button class="rb ddb" id="dd-ann" aria-haspopup="true" aria-expanded="false"><span class="ic" data-ic="text"></span><i class="chev">▾</i></button></div><div class="gl">Anotações</div></div>
   </div>
 
   <div class="pn" id="pn-layout">
@@ -562,7 +561,8 @@ window.addEventListener('keydown',e=>{
   if((e.ctrlKey||e.metaKey)&&k==='v'){e.preventDefault();pasteSel();return}
   if((e.ctrlKey||e.metaKey)&&k==='d'){e.preventDefault();if(copySel())pasteSel();return}
   if(k===' '){space=true;e.preventDefault();return}
-  if(k==='escape'){closeWheel();endWall();sel=null;ms=[];msBox=null;draw()}
+  if(k==='escape'){const wh=whOpen,busy=!!(drawing||dd||dstart);closeWheel();endWall();dstart=null;sel=null;ms=[];msBox=null;
+    if(!wh&&!busy&&tool!=='select')setTool('select');else draw()}
   else if(k==='delete'||k==='backspace')delSel();
   else if(k.startsWith('arrow')&&ms.length){e.preventDefault();const d=5*((k==='arrowright'||k==='arrowdown')?1:-1);push();moveGrp(JSON.parse(JSON.stringify(S)),msBox,k==='arrowleft'||k==='arrowright'?d:0,k==='arrowup'||k==='arrowdown'?d:0);save();draw()}
   else if(k.startsWith('arrow')&&sel&&(sel.k==='wall'||sel.k==='label'||sel.k==='dim'||sel.k==='duct')){e.preventDefault();const st=e.shiftKey?50:5,dx=k==='arrowright'?st:k==='arrowleft'?-st:0,dy=k==='arrowdown'?st:k==='arrowup'?-st:0,
@@ -996,33 +996,33 @@ $('#dup').onclick=()=>{if(!sel)return;
     T_=(t)=>()=>tool===t,fs=$('#fsel');
   const symItems=hy=>{const out=[];let g='';for(const id in SY){const sy=SY[id];if(!!sy.hyd!==hy)continue;if(sy.grp!==g){g=sy.grp;out.push({h:g})}
     const v=sy.n+'|'+sy.w+'|'+sy.h+'|'+(hy?'hid':'ele')+'|'+id;
-    out.push({n:(sy.nb?sy.nb+'  ':'')+sy.n,svg:symSVG(sy),col:hy?'var(--ch)':'var(--ce)',test:()=>tool==='furn'&&fs.value===v,pick:()=>{fs.value=v;setTool('furn')}})}return out};
+    out.push({nb:sy.nb||'',n:sy.n,svg:symSVG(sy),col:hy?'var(--ch)':'var(--ce)',test:()=>tool==='furn'&&fs.value===v,pick:()=>{fs.value=v;setTool('furn')}})}return out};
   const sets={
     arq:[{n:'Parede',svg:ic('wall'),test:T_('wall'),pick:()=>setTool('wall')},{n:'Porta',svg:ic('door'),test:T_('door'),pick:()=>setTool('door')},{n:'Janela',svg:ic('window'),test:T_('window'),pick:()=>setTool('window')}],
     mov:FV.map(v=>{const n=v.split('|')[0];return{n,svg:fsv(n),test:()=>tool==='furn'&&fs.value===v,pick:()=>{fs.value=v;setTool('furn')}}}),
     ele:[...symItems(false),{h:'Eletrodutos'},
-      {n:'5.1  Eletroduto embutido no teto ou parede',svg:dsv(0),col:'var(--ce)',test:()=>tool==='duct'&&dkind===0,pick:()=>{dkind=0;setTool('duct')}},
-      {n:'5.2  Eletroduto embutido no piso',svg:dsv(1),col:'var(--ce)',test:()=>tool==='duct'&&dkind===1,pick:()=>{dkind=1;setTool('duct')}}],
+      {nb:'5.1',n:'Eletroduto embutido no teto ou parede',svg:dsv(0),col:'var(--ce)',test:()=>tool==='duct'&&dkind===0,pick:()=>{dkind=0;setTool('duct')}},
+      {nb:'5.2',n:'Eletroduto embutido no piso',svg:dsv(1),col:'var(--ce)',test:()=>tool==='duct'&&dkind===1,pick:()=>{dkind=1;setTool('duct')}}],
     hid:[...symItems(true),{h:'Tubulações'},...KP.map((q,k)=>({n:q.n,svg:psv(q),col:q.c,test:()=>tool==='pipe'&&pkind===k,pick:()=>{pkind=k;setTool('pipe')}}))],
     ann:[{n:'Nome do cômodo',svg:ic('text'),test:T_('text'),pick:()=>setTool('text')},{n:'Cota',svg:ic('dim'),test:T_('dim'),pick:()=>setTool('dim')},{n:'Área do cômodo',svg:ic('area'),test:T_('area'),pick:()=>setTool('area')}]};
   const first=(k,t)=>sets[k].find(i=>i.n&&(!t||i.n.includes(t)));
   const face={arq:{svg:ic('wall')},mov:{svg:ic('furn')},ele:{svg:symSVG(SY.tb),col:'var(--ce)'},hid:{svg:symSVG(SY.ha),col:'var(--ch)'},ann:{svg:ic('text')}};
-  const setFace=k=>{const b=$('#dd-'+k),f=face[k];b.querySelector('.ic').innerHTML=f.svg;b.style.color=f.col||''};
+  const setFace=k=>{document.querySelectorAll('.ddb[data-dd="'+k+'"]').forEach(b=>{const f=face[k];b.querySelector('.ic').innerHTML=f.svg;b.style.color=f.col||''})};
   let open=null,menu=null;
   const close=()=>{if(menu){menu.remove();menu=null}if(open){open.setAttribute('aria-expanded','false');open=null}};
   window.closeDD=close;
   for(const k in sets)setFace(k);
-  for(const k in sets){const b=$('#dd-'+k);b.onclick=e=>{e.stopPropagation();if(open===b){close();return}close();open=b;b.setAttribute('aria-expanded','true');
+  for(const k in sets){document.querySelectorAll('.ddb[data-dd="'+k+'"]').forEach(b=>{b.onclick=e=>{e.stopPropagation();if(open===b){close();return}close();open=b;b.setAttribute('aria-expanded','true');
     menu=document.createElement('div');menu.className='ddm';
     for(const it of sets[k]){if(it.h){const d=document.createElement('div');d.className='dh';d.textContent=it.h;menu.append(d);continue}
       const r=document.createElement('button');r.className='ddi';r.setAttribute('aria-pressed',it.test());
-      r.innerHTML='<span class="dn"></span><span class="dp"></span>';r.querySelector('.dn').textContent=it.n;const p=r.querySelector('.dp');p.innerHTML=it.svg;if(it.col)p.style.color=it.col;
+      r.innerHTML='<span class="dn"></span><span class="dp"></span>';r.querySelector('.dn').textContent=it.n;if(it.nb){const nb=document.createElement('span');nb.className='nb';nb.textContent=it.nb;r.append(nb)}const p=r.querySelector('.dp');p.innerHTML=it.svg;if(it.col)p.style.color=it.col;
       r.onclick=ev=>{ev.stopPropagation();face[k]={svg:it.svg,col:it.col};setFace(k);close();it.pick()};menu.append(r)}
     document.body.append(menu);const R=b.getBoundingClientRect();
     menu.style.left=Math.max(8,Math.min(R.left,innerWidth-menu.offsetWidth-8))+'px';menu.style.top=(R.bottom+4)+'px';menu.style.maxHeight=Math.max(160,innerHeight-R.bottom-16)+'px';
-    const on=menu.querySelector('[aria-pressed="true"]');if(on)on.scrollIntoView({block:'nearest'})}}
+    const on=menu.querySelector('[aria-pressed="true"]');if(on)on.scrollIntoView({block:'nearest'})}})}
   document.addEventListener('click',e=>{if(menu&&!menu.contains(e.target))close()});
-  document.addEventListener('keydown',e=>{if(e.key==='Escape')close()},true);
+  document.addEventListener('keydown',e=>{if(e.key==='Escape'){if(menu)e.stopPropagation();close()}},true);
   window.addEventListener('resize',close);
 })();
 document.querySelectorAll('.mt[data-p]').forEach(b=>b.addEventListener('click',()=>closeDD()));
@@ -1231,7 +1231,7 @@ load();renderTabs();setTool('wall');resize();if(S.walls.length)fit();
     const R=btn.getBoundingClientRect();root.style.left=Math.max(4,R.left)+'px';root.style.top=R.bottom+'px'};
   btn.onclick=e=>{e.stopPropagation();root?close():open()};
   document.addEventListener('click',e=>{if(root&&!root.contains(e.target)&&!subs.some(m=>m.contains(e.target)))close()});
-  document.addEventListener('keydown',e=>{if(e.key==='Escape'&&root)close()},true);
+  document.addEventListener('keydown',e=>{if(e.key==='Escape'&&root){close();e.stopPropagation()}},true);
   window.addEventListener('resize',close);
   document.querySelectorAll('.mt[data-p]').forEach(b=>b.addEventListener('click',close));
   /* atalhos */
