@@ -1315,7 +1315,7 @@ load();renderTabs();setTool('wall');resize();if(S.walls.length)fit();
 (function(){
   const NS='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">';
   const icn=n=>NS+({new:'<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/>',info:'<circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5h.01"/>',exit:'<path d="M18 6L6 18M6 6l12 12"/>'}[n]||IC[n])+'</svg>';
-  const btn=$('#mt-file');let root=null,subs=[],cur=null;
+  const btn=$('#mt-file');let root=null,subs=[],cur=null,ct=0;
   const hasContent=()=>S.walls.length||S.ops.length||S.labels.length||S.furn.length||S.dims.length||S.ducts.length||(S.pav&&S.pav.length>1);
   const click=id=>{const b=document.getElementById(id);if(b)b.click()};
   const fileNew=()=>{if(hasContent()&&!confirm('Criar um novo projeto? O desenho atual será apagado (você pode desfazer com Ctrl+Z).'))return;
@@ -1338,7 +1338,7 @@ load();renderTabs();setTool('wall');resize();if(S.walls.length)fit();
     {sep:1},
     {n:'Propriedades do projeto',ic:'info',sc:'Ctrl+E',do:props},
     {n:'Sair',ic:'exit',do:quit}];
-  const closeSubs=()=>{subs.forEach(m=>m.remove());subs=[]};
+  const closeSubs=()=>{clearTimeout(ct);subs.forEach(m=>m.remove());subs=[]};
   const close=()=>{closeSubs();if(root){root.remove();root=null}btn.setAttribute('aria-expanded','false')};
   window.closeFM=close;
   const build=(items,sub)=>{const m=document.createElement('div');m.className='fm'+(sub?' sub':'');
@@ -1349,13 +1349,13 @@ load();renderTabs();setTool('wall');resize();if(S.walls.length)fit();
       r.querySelector('.fic').innerHTML=icn(it.ic);r.querySelector('.fn').textContent=it.n;
       if(it.sc&&!it.sub)r.querySelector('.sc').textContent=it.sc;
       if(it.sub){
-        const openSub=()=>{if(r.classList.contains('hv'))return;closeSubs();m.querySelectorAll('.fi').forEach(x=>x.classList.remove('hv'));r.classList.add('hv');
-          const sm=build(it.sub,true);document.body.append(sm);subs.push(sm);const R=r.getBoundingClientRect();
+        const openSub=()=>{clearTimeout(ct);if(r.classList.contains('hv')&&subs.length)return;closeSubs();m.querySelectorAll('.fi').forEach(x=>x.classList.remove('hv'));r.classList.add('hv');
+          const sm=build(it.sub,true);sm.onmouseenter=()=>clearTimeout(ct);document.body.append(sm);subs.push(sm);const R=r.getBoundingClientRect();
           let left=R.right+4;if(left+sm.offsetWidth>innerWidth-8)left=R.left-sm.offsetWidth-4;
           sm.style.left=Math.max(8,left)+'px';sm.style.top=Math.min(R.top-4,innerHeight-sm.offsetHeight-8)+'px'};
         r.onmouseenter=openSub;r.onclick=e=>{e.stopPropagation();openSub()};
       }else{
-        r.onmouseenter=()=>{closeSubs();m.querySelectorAll('.fi').forEach(x=>x.classList.remove('hv'))};
+        r.onmouseenter=()=>{clearTimeout(ct);if(sub)return;ct=setTimeout(()=>{closeSubs();m.querySelectorAll('.fi').forEach(x=>x.classList.remove('hv'))},350)};
         r.onclick=e=>{e.stopPropagation();close();setTimeout(it.do,0)};
       }
       m.append(r)}
