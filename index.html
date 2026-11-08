@@ -47,7 +47,12 @@ input[type=text],input[type=number],input[type=search],input:not([type]),select{
 /* corpo */
 #main{flex:1;min-height:0;display:flex}
 #lib{width:232px;flex:none;display:flex;flex-direction:column;min-height:0;border-right:1px solid var(--line);background:var(--bar)}
-.pt{padding:8px 12px;font-weight:700}
+.pt{display:flex;align-items:center;gap:8px;padding:6px 8px 6px 12px;font-weight:700}
+#props .pt{justify-content:space-between}#lib .pt{padding:6px 12px 6px 8px}
+.pbtn{flex:none;width:32px;height:32px;padding:4px;display:flex;align-items:center;justify-content:center;border-radius:6px}
+.pbtn .ic,.pbtn .ic svg{display:block;width:20px;height:20px}
+#lib.rail,#props.rail{width:44px;overflow:hidden}
+.rail>:not(.pt){display:none}.rail .ptt{display:none}.rail .pt{justify-content:center;padding:6px 0}
 #ls{margin:0 10px 8px}
 #lbody{flex:1;overflow:auto}
 .lh{display:flex;justify-content:space-between;align-items:center;width:100%;border:0;border-radius:0;background:var(--hover);padding:6px 12px;font-weight:600;text-align:left}
@@ -219,10 +224,8 @@ footer>span:first-child{flex:1;min-width:0}footer>span:last-child{white-space:no
       <label class="chk"><input type="checkbox" id="sno" checked> Snap em objetos</label>
     </div><div class="gl">Precisão (Shift desliga)</div></div>
     <div class="grp"><div class="gb">
-      <button class="rb" id="tglib" aria-pressed="true"><span class="ic" data-ic="lib"></span>Biblioteca</button>
-      <button class="rb" id="tgprops" aria-pressed="true"><span class="ic" data-ic="props"></span>Propriedades</button>
       <button class="rb" id="theme"><span class="ic" data-ic="moon"></span>Tema escuro</button>
-    </div><div class="gl">Janelas e tema</div></div>
+    </div><div class="gl">Tema</div></div>
   </div>
 
   <div class="pn" id="pn-sym">
@@ -247,7 +250,7 @@ footer>span:first-child{flex:1;min-width:0}footer>span:last-child{white-space:no
 
 <div id="main">
   <aside id="lib">
-    <div class="pt">Bibliotecas</div>
+    <div class="pt"><button class="pbtn" id="tglib" aria-expanded="true" title="Recolher biblioteca"><span class="ic" data-ic="lib"></span></button><span class="ptt">Bibliotecas</span></div>
     <input type="search" id="ls" placeholder="Buscar" aria-label="Buscar na biblioteca">
     <div id="lbody">
       <section class="ls"><button class="lh">Paredes, portas e janelas <i>▾</i></button>
@@ -273,7 +276,7 @@ footer>span:first-child{flex:1;min-width:0}footer>span:last-child{white-space:no
   </section>
 
   <aside id="props">
-    <div class="pt">Propriedades</div>
+    <div class="pt"><span class="ptt">Propriedades</span><button class="pbtn" id="tgprops" aria-expanded="true" title="Recolher propriedades"><span class="ic" data-ic="props"></span></button></div>
     <div id="insp"></div>
     <div class="ph">Planta baixa</div>
     <div class="pg">
@@ -980,7 +983,8 @@ $('#rot').onclick=()=>{if(sel&&sel.k==='furn'){const f=S.furn.find(o=>o.id===sel
 $('#dup').onclick=()=>{if(!sel)return;
   if(sel.k==='furn'){const f=S.furn.find(o=>o.id===sel.id);if(f){push();const g={...f,id:nid(),x:f.x+20,y:f.y+20};S.furn.push(g);sel={k:'furn',id:g.id};save();draw()}}
   else if(sel.k==='duct'){const d=S.ducts.find(o=>o.id===sel.id);if(d){push();const g={...d,id:nid(),x1:d.x1+20,y1:d.y1+20,x2:d.x2+20,y2:d.y2+20};S.ducts.push(g);sel={k:'duct',id:g.id};save();draw()}}};
-[['#tglib','#lib'],['#tgprops','#props']].forEach(([b,p])=>$(b).onclick=e=>{const h=!$(p).hidden;$(p).hidden=h;e.currentTarget.setAttribute('aria-pressed',!h)});
+[['#tglib','#lib','biblioteca'],['#tgprops','#props','propriedades']].forEach(([b,p,n])=>$(b).onclick=e=>{const r=$(p).classList.toggle('rail');
+  e.currentTarget.setAttribute('aria-expanded',!r);e.currentTarget.title=(r?'Expandir ':'Recolher ')+n});
 
 /* ===== menus suspensos da aba Inserir (estilo Paint) ===== */
 (function(){
