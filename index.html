@@ -46,7 +46,7 @@ input[type=text],input[type=number],input[type=search],input:not([type]),select{
 .dh{position:sticky;top:-6px;z-index:1;background:var(--bar);font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);padding:10px 10px 4px;border-bottom:1px solid var(--line);margin-bottom:3px}
 .sep{width:1px;align-self:stretch;margin:8px 6px;background:var(--line)}
 #txt{width:120px;margin:0 4px}
-#lay{display:flex;flex-direction:column;gap:3px}#lay label{display:flex;gap:6px;align-items:center;padding:0 6px}
+#lay{display:grid;grid-template-columns:auto auto;gap:3px 16px}#lay label{display:flex;gap:6px;align-items:center;padding:0 6px}
 
 /* corpo */
 #main{flex:1;min-height:0;display:flex}
@@ -116,23 +116,23 @@ footer>span:first-child{flex:1;min-width:0}footer>span:last-child{white-space:no
 .fsep{height:1px;background:var(--line);margin:4px 8px}
 .mt[aria-expanded="true"]{background:var(--bar);color:var(--accent)}
 /* aba Inserir: pintura de cômodos */
-#rpre{display:grid;grid-template-columns:repeat(4,auto);gap:4px 4px;padding:0 4px}
-.rpb{display:flex;align-items:center;gap:6px;padding:3px 9px 3px 6px;border:1px solid var(--line);border-radius:14px;font-size:12px;white-space:nowrap}
+#rpre{display:grid;grid-template-columns:repeat(4,auto);gap:5px 4px;padding:0 2px}
+.rpb{display:flex;align-items:center;gap:5px;padding:3px 8px 3px 5px;border:1px solid var(--line);border-radius:14px;font-size:11.5px;line-height:1.2;white-space:nowrap}
 .rpb i{width:14px;height:14px;border-radius:50%;border:1px solid rgba(0,0,0,.35);flex:none}
 .rpb[aria-pressed="true"]{background:var(--hover);border-color:var(--accent);color:var(--accent)}
-#rcur{width:44px;height:44px;border-radius:50%;margin:0 8px 0 6px;flex:none;border:3px solid var(--paper);box-shadow:0 0 0 2px var(--accent);background:#b97a57}
-#rpal{display:grid;grid-template-columns:repeat(10,20px);gap:4px 5px}
-.sw{width:20px;height:20px;padding:0;border-radius:50%;border:1px solid rgba(0,0,0,.35)}
+#rcur{width:40px;height:40px;border-radius:50%;margin:0 6px 0 4px;flex:none;border:3px solid var(--paper);box-shadow:0 0 0 2px var(--accent);background:#b97a57}
+#rpal{display:grid;grid-template-columns:repeat(10,18px);gap:4px}
+.sw{width:18px;height:18px;padding:0;border-radius:50%;border:1px solid rgba(0,0,0,.35)}
 .sw:hover{outline:2px solid var(--accent);outline-offset:1px;background-color:inherit}
 .sw.on{outline:2px solid var(--accent);outline-offset:1px}
 .sw.empty{background:transparent;border:1px dashed var(--line);cursor:default}
 .sw.empty:hover{outline:0}
-.rcw{position:relative;width:30px;height:30px;border-radius:50%;margin:0 6px 0 10px;flex:none;overflow:hidden;cursor:pointer;border:1px solid var(--line);background:conic-gradient(#f00,#ff0,#0f0,#0ff,#00f,#f0f,#f00)}
+.rcw{position:relative;width:26px;height:26px;border-radius:50%;margin:0 4px 0 8px;flex:none;overflow:hidden;cursor:pointer;border:1px solid var(--line);background:conic-gradient(#f00,#ff0,#0f0,#0ff,#00f,#f0f,#f00)}
 .rcw input{position:absolute;inset:-6px;width:calc(100% + 12px);height:calc(100% + 12px);opacity:0;cursor:pointer;padding:0;border:0}
 .rrow{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted);white-space:nowrap}
-.rrow input[type=range]{width:110px;padding:0;margin:0}.rrow #ropv{width:34px;text-align:right}
-#rnm{width:150px;padding:2px 6px}
-#pn-ins .gb.col{gap:8px}
+.rrow input[type=range]{width:90px;padding:0;margin:0}.rrow #ropv{width:34px;text-align:right}
+#rnm{width:130px;padding:2px 6px}
+#pn-ins .gb.col{gap:5px;justify-content:center}
 #rpal{gap:4px 5px}
 </style>
 </head>
@@ -211,12 +211,9 @@ footer>span:first-child{flex:1;min-width:0}footer>span:last-child{white-space:no
     </div><div class="gl">Cores</div></div>
     <div class="grp"><div class="gb col">
       <label class="rrow">Opacidade<input type="range" id="rop" min="10" max="100" step="5" value="80"><span id="ropv">80%</span></label>
-      <label class="rrow">Nome<input type="text" id="rnm" maxlength="30" placeholder="opcional (vai na legenda)"></label>
+      <label class="rrow">Nome<input type="text" id="rnm" maxlength="30" placeholder="opcional (legenda)"></label>
+      <label class="rrow"><input type="checkbox" id="rwr"> Escrever o nome na planta</label>
     </div><div class="gl">Aparência</div></div>
-    <div class="grp"><div class="gb col">
-      <label class="chk"><input type="checkbox" id="rwr"> Escrever o nome na planta</label>
-      <label class="chk"><input type="checkbox" data-l="rooms" checked> Mostrar as cores</label>
-    </div><div class="gl">Opções</div></div>
   </div>
 
   <div class="pn" id="pn-layout">
@@ -254,7 +251,7 @@ footer>span:first-child{flex:1;min-width:0}footer>span:last-child{white-space:no
       <button class="rb" id="zi" aria-label="Aumentar zoom"><span class="ic" data-ic="zin"></span>Zoom +</button>
     </div><div class="gl">Zoom</div></div>
     <div class="grp"><div class="gb">
-      <div id="lay"><label><input type="checkbox" data-l="mov" checked> Móveis</label><label><input type="checkbox" data-l="ele" checked> Elétrica</label><label><input type="checkbox" data-l="hid" checked> Hidráulica</label></div>
+      <div id="lay"><label><input type="checkbox" data-l="mov" checked> Móveis</label><label><input type="checkbox" data-l="ele" checked> Elétrica</label><label><input type="checkbox" data-l="hid" checked> Hidráulica</label><label><input type="checkbox" data-l="rooms" checked> Cores dos cômodos</label></div>
     </div><div class="gl">Camadas</div></div>
     <div class="grp"><div class="gb col">
       <label class="chk"><input type="checkbox" id="gr" checked> Grade</label>
