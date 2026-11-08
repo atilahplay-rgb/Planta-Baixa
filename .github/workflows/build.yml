@@ -26,7 +26,14 @@ jobs:
         run: npm ci
 
       - name: Gerar o instalador
-        run: npx electron-builder --win nsis --publish never
+        shell: bash
+        run: |
+          if [[ "$GITHUB_REF" == refs/tags/v* ]]; then
+            V="${GITHUB_REF_NAME#v}"
+            npx electron-builder --win --publish never -c.extraMetadata.version="$V"
+          else
+            npx electron-builder --win --publish never
+          fi
 
       - name: Guardar o instalador como artefato
         uses: actions/upload-artifact@v4
