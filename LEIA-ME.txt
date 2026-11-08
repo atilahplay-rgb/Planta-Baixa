@@ -1,0 +1,21 @@
+PLANTA BAIXA - COMO GERAR O INSTALADOR (.exe) NO WINDOWS
+
+Faca isso uma unica vez:
+1. Instale o Node.js (versao LTS) em https://nodejs.org
+2. Coloque os 4 arquivos (index.html, main.js, preload.js, package.json) numa pasta, por exemplo C:\PlantaBaixa
+3. Abra o Prompt de Comando (ou PowerShell) dentro dessa pasta
+
+Comandos:
+   npm install          (baixa o Electron, demora alguns minutos)
+   npm start            (abre o app para testar, sem instalar)
+   npm run dist         (gera o instalador)
+
+O instalador fica em:  dist\Planta Baixa Setup 1.0.0.exe
+Execute-o para instalar. O app aparece no Menu Iniciar.
+
+Problemas comuns:
+- Erro "Cannot create symbolic link" no npm run dist: abra o terminal como Administrador
+  ou ative o "Modo de Desenvolvedor" do Windows e rode de novo.
+- Aviso azul do SmartScreen ao instalar: normal, o instalador nao e assinado.
+  Clique em "Mais informacoes" e depois em "Executar assim mesmo".
+- Seus desenhos ficam salvos automaticamente no app; use "Salvar projeto" para guardar copia em arquivo.
