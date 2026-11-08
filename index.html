@@ -97,11 +97,20 @@ footer>span:first-child{flex:1;min-width:0}footer>span:last-child{white-space:no
 .qh{display:flex;justify-content:space-between;align-items:center;padding:10px 14px;border-bottom:1px solid var(--line)}.qh button{border-color:var(--line);margin-left:6px}
 #qb{overflow:auto;padding:8px 14px}#qb table{width:100%;border-collapse:collapse}#qb th,#qb td{text-align:left;padding:5px 8px;border-bottom:1px solid var(--line)}
 #qb th{color:var(--muted);font-weight:600}#qb td.n{text-align:right;font-variant-numeric:tabular-nums}
+.fm{position:fixed;z-index:35;width:290px;background:var(--bar);border:1px solid var(--line);border-radius:8px;box-shadow:0 8px 24px rgba(0,0,0,.35);padding:4px}
+.fm.sub{width:230px;z-index:36}
+.fi{display:flex;align-items:center;gap:12px;width:100%;padding:8px 12px;border-radius:4px;text-align:left;font-size:13px;position:relative}
+.fi:hover,.fi.hv{background:var(--hover)}
+.fi:disabled{opacity:.45;cursor:default}.fi:disabled:hover{background:transparent}
+.fi .fic{width:20px;height:20px;flex:none;display:flex}.fi .fic svg{width:100%;height:100%;display:block}
+.fi .fn{flex:1}.fi .sc{color:var(--muted);font-size:12px}.fi .ar{color:var(--muted);font-size:12px}
+.fsep{height:1px;background:var(--line);margin:4px 8px}
+.mt[aria-expanded="true"]{background:var(--bar);color:var(--accent)}
 </style>
 </head>
 <body>
 <div id="menu">
-  <button class="mt" data-p="file">Arquivo</button>
+  <button class="mt" id="mt-file" aria-haspopup="true" aria-expanded="false">Arquivo</button>
   <button class="mt on" data-p="home">Início</button>
   <button class="mt" data-p="ins">Inserir</button>
   <button class="mt" data-p="layout">Layout da página</button>
@@ -895,8 +904,8 @@ document.querySelectorAll('.lh').forEach(h=>h.onclick=()=>h.parentElement.classL
 $('#ls').oninput=e=>{const q=e.target.value.trim().toLowerCase();
   document.querySelectorAll('.ls').forEach(s=>{let n=0;s.querySelectorAll('.tile').forEach(t=>{const ok=!q||t.dataset.n.includes(q);t.hidden=!ok;if(ok)n++});s.hidden=!n})};
 
-document.querySelectorAll('.mt').forEach(b=>b.onclick=()=>{
-  document.querySelectorAll('.mt').forEach(x=>x.classList.toggle('on',x===b));
+document.querySelectorAll('.mt[data-p]').forEach(b=>b.onclick=()=>{
+  document.querySelectorAll('.mt[data-p]').forEach(x=>x.classList.toggle('on',x===b));
   document.querySelectorAll('.pn').forEach(p=>p.classList.toggle('on',p.id==='pn-'+b.dataset.p))});
 
 document.querySelectorAll('[name=wd]').forEach(r=>r.onchange=()=>{showDim=r.value==='1';draw()});
@@ -1012,7 +1021,7 @@ $('#dup').onclick=()=>{if(!sel)return;
   document.addEventListener('keydown',e=>{if(e.key==='Escape')close()},true);
   window.addEventListener('resize',close);
 })();
-document.querySelectorAll('.mt').forEach(b=>b.addEventListener('click',()=>closeDD()));
+document.querySelectorAll('.mt[data-p]').forEach(b=>b.addEventListener('click',()=>closeDD()));
 
 /* ===== 8. Paredes com cantos resolvidos, hachura e escada ===== */
 function buildEM(){const m=new Map(),kf=(x,y)=>Math.round(x)+','+Math.round(y);
@@ -1164,6 +1173,69 @@ async function printScaled(){const q=C(),N=scaleN(),P={A4:[297,210],A3:[420,297]
 $('#prt').onclick=()=>printScaled();
 
 load();renderTabs();setTool('wall');resize();if(S.walls.length)fit();
+
+/* ===== menu Arquivo suspenso (estilo Paint) ===== */
+(function(){
+  const NS='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">';
+  const icn=n=>NS+({new:'<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/>',info:'<circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5h.01"/>',exit:'<path d="M18 6L6 18M6 6l12 12"/>'}[n]||IC[n])+'</svg>';
+  const btn=$('#mt-file');let root=null,subs=[],cur=null;
+  const hasContent=()=>S.walls.length||S.ops.length||S.labels.length||S.furn.length||S.dims.length||S.ducts.length||(S.pav&&S.pav.length>1);
+  const click=id=>{const b=document.getElementById(id);if(b)b.click()};
+  const fileNew=()=>{if(hasContent()&&!confirm('Criar um novo projeto? O desenho atual será apagado (você pode desfazer com Ctrl+Z).'))return;
+    push();S={walls:[],ops:[],labels:[],furn:[],dims:[],ducts:[],cfg:{...CFG0}};fixIds();sel=null;ms=[];msBox=null;drawing=null;ik=null;save();renderTabs();syncCfg();fit()};
+  const props=()=>{const t=document.querySelector('.mt[data-p="layout"]');if(t)t.click();setTimeout(()=>{const i=document.querySelector('[data-cfg="pj"]');if(i){i.focus();i.select()}},30)};
+  const quit=()=>{try{window.close()}catch(e){}};
+  const ITEMS=[
+    {n:'Novo',ic:'new',sc:'Ctrl+N',do:fileNew},
+    {n:'Abrir',ic:'open',sc:'Ctrl+O',do:()=>click('op')},
+    {sep:1},
+    {n:'Salvar',ic:'save',sc:'Ctrl+S',do:()=>click('sv')},
+    {n:'Salvar como',ic:'img',sub:[
+      {n:'Imagem PNG',ic:'img',do:()=>click('png')},
+      ...(window.api?[{n:'Documento PDF',ic:'pdf',do:()=>click('pdf')}]:[]),
+      {n:'Desenho vetorial SVG',ic:'img',do:()=>click('svg')},
+      {n:'AutoCAD DXF',ic:'code',do:()=>click('dxf')}]},
+    {sep:1},
+    {n:'Imprimir',ic:'print',sc:'Ctrl+P',sub:[{n:'Imprimir em escala',ic:'print',do:()=>click('prt')}]},
+    {n:'Quantitativos',ic:'list',do:()=>click('qty')},
+    {sep:1},
+    {n:'Propriedades do projeto',ic:'info',sc:'Ctrl+E',do:props},
+    {n:'Sair',ic:'exit',do:quit}];
+  const closeSubs=()=>{subs.forEach(m=>m.remove());subs=[]};
+  const close=()=>{closeSubs();if(root){root.remove();root=null}btn.setAttribute('aria-expanded','false')};
+  window.closeFM=close;
+  const build=(items,sub)=>{const m=document.createElement('div');m.className='fm'+(sub?' sub':'');
+    for(const it of items){
+      if(it.sep){const d=document.createElement('div');d.className='fsep';m.append(d);continue}
+      const r=document.createElement('button');r.className='fi';
+      r.innerHTML='<span class="fic"></span><span class="fn"></span>'+(it.sub?'<span class="ar">▸</span>':(it.sc?'<span class="sc"></span>':''));
+      r.querySelector('.fic').innerHTML=icn(it.ic);r.querySelector('.fn').textContent=it.n;
+      if(it.sc&&!it.sub)r.querySelector('.sc').textContent=it.sc;
+      if(it.sub){
+        const openSub=()=>{if(r.classList.contains('hv'))return;closeSubs();m.querySelectorAll('.fi').forEach(x=>x.classList.remove('hv'));r.classList.add('hv');
+          const sm=build(it.sub,true);document.body.append(sm);subs.push(sm);const R=r.getBoundingClientRect();
+          let left=R.right+4;if(left+sm.offsetWidth>innerWidth-8)left=R.left-sm.offsetWidth-4;
+          sm.style.left=Math.max(8,left)+'px';sm.style.top=Math.min(R.top-4,innerHeight-sm.offsetHeight-8)+'px'};
+        r.onmouseenter=openSub;r.onclick=e=>{e.stopPropagation();openSub()};
+      }else{
+        r.onmouseenter=()=>{closeSubs();m.querySelectorAll('.fi').forEach(x=>x.classList.remove('hv'))};
+        r.onclick=e=>{e.stopPropagation();close();setTimeout(it.do,0)};
+      }
+      m.append(r)}
+    return m};
+  const open=()=>{close();closeDD&&closeDD();btn.setAttribute('aria-expanded','true');root=build(ITEMS,false);document.body.append(root);
+    const R=btn.getBoundingClientRect();root.style.left=Math.max(4,R.left)+'px';root.style.top=R.bottom+'px'};
+  btn.onclick=e=>{e.stopPropagation();root?close():open()};
+  document.addEventListener('click',e=>{if(root&&!root.contains(e.target)&&!subs.some(m=>m.contains(e.target)))close()});
+  document.addEventListener('keydown',e=>{if(e.key==='Escape'&&root)close()},true);
+  window.addEventListener('resize',close);
+  document.querySelectorAll('.mt[data-p]').forEach(b=>b.addEventListener('click',close));
+  /* atalhos */
+  document.addEventListener('keydown',e=>{if(!(e.ctrlKey||e.metaKey)||e.altKey||e.shiftKey)return;
+    const t=e.target,typing=t&&(t.tagName==='INPUT'||t.tagName==='TEXTAREA'||t.tagName==='SELECT');
+    const k=e.key.toLowerCase(),M={n:fileNew,o:()=>click('op'),s:()=>click('sv'),p:()=>click('prt'),e:props};
+    if(M[k]&&(!typing||k!=='e')){e.preventDefault();M[k]()}});
+})();
 </script>
 </body>
 </html>
