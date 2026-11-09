@@ -168,6 +168,7 @@ footer>span:first-child{flex:1;min-width:0}footer>span:last-child{white-space:no
   <button class="mt" data-p="view">Exibir</button>
   <button class="mt" data-p="sym">Símbolos</button>
   <button class="mt" data-p="help">Ajuda</button>
+  <span id="ttl"></span>
 </div>
 
 <div id="ribbon">
@@ -465,7 +466,7 @@ function lenLabel(x1,y1,x2,y2,col,off){const L=Math.hypot(x2-x1,y2-y1);if(L*K()<
 
 let rq=0;
 function draw(){if(!rq)rq=requestAnimationFrame(()=>{rq=0;drawNow()})}
-function drawNow(){try{drawBody()}finally{if(!XW){syncCfg();updInsp();updSum();drawRulers()}}}
+function drawNow(){try{drawBody()}finally{if(!XW){for(const fn of[syncCfg,updInsp,updSum,drawRulers])try{fn()}catch(e){console.error(e)}}}}
 function drawBody(){
   const W=XW||cv.clientWidth,H=XH||cv.clientHeight,c=colors(),k=K();
   ctx.setTransform(dpr,0,0,dpr,0,0);ctx.setLineDash([]);ctx.globalAlpha=1;
@@ -1098,7 +1099,7 @@ function drawTitleBlock(c,W,H){const q=C();if(!q.tb)return;
   ctx.restore()}
 function syncCfg(){const q=C(),r=document.documentElement.style;r.setProperty('--ce',q.ce);r.setProperty('--ch',q.ch);
   document.querySelectorAll('[data-cfg]').forEach(i=>{if(document.activeElement===i)return;const v=q[i.dataset.cfg];if(i.type==='checkbox')i.checked=!!v;else if(i.value!=v)i.value=v});
-  const t=q.pj||'Planta Baixa';if($('#ttl').textContent!==t){$('#ttl').textContent=t;document.title=t}}
+  const t=q.pj||'Planta Baixa',te=$('#ttl');if(te&&te.textContent!==t)te.textContent=t;if(document.title!==t)document.title=t}
 document.querySelectorAll('[data-cfg]').forEach(i=>{const k=i.dataset.cfg,ap=()=>{let v;
   if(i.type==='checkbox')v=i.checked;else if(i.type==='number'){v=+i.value;if(!isFinite(v)||i.value==='')v=CFG0[k];v=Math.min(+i.max,Math.max(+i.min,v))}
   else if(i.tagName==='SELECT'){const nv=+i.value;v=i.value!==''&&isFinite(nv)?nv:i.value}else v=i.value;
@@ -1691,7 +1692,7 @@ function draw3(){
   V.sc.forEach((fl,k)=>{
     const gr=fl.gr,e=V.ox+s*(-V.cx*cT+V.cy*sT),f=V.oy+s*(-(V.cx*sT+V.cy*cT)*sP-fl.E*cP);
     if(k===0){const a=[[gr.x0,gr.y0],[gr.x1,gr.y0],[gr.x1,gr.y1],[gr.x0,gr.y1]].map(p=>pr(p[0],p[1],fl.E-14));
-      g3.save();g3.shadowColor='rgba(0,0,0,.32)';g3.shadowBlur=30*dp;g3.shadowOffsetY=16*dp;g3.fillStyle='#bfb9ad';
+      g3.save();g3.shadowColor='rgba(0,0,0,.2)';g3.shadowBlur=22*dp;g3.shadowOffsetY=10*dp;g3.fillStyle='#bfb9ad';
       g3.beginPath();a.forEach((p,i)=>i?g3.lineTo(p[0],p[1]):g3.moveTo(p[0],p[1]));g3.closePath();g3.fill();g3.restore()}
     /* piso (plano): base, cores dos cômodos, acabamentos, sombras e nomes */
     g3.setTransform(dp*s*cT,dp*s*sT*sP,-dp*s*sT,dp*s*cT*sP,dp*e,dp*f);
@@ -1711,13 +1712,13 @@ function draw3(){
     vis.sort((a,b)=>a.d-b.d);
     g3.lineJoin='round';g3.lineWidth=.8;
     for(const{q}of vis){
-      const n=q.n,k2=Math.min(1.05,.5+.55*Math.max(0,n[0]*LD[0]+n[1]*LD[1]+n[2]*LD[2])+.14*Math.max(0,n[0]*L2[0]+n[1]*L2[1]+n[2]*L2[2])),al=q.a===undefined?1:q.a,cc=COL[q.c];
+      const n=q.n,k2=Math.min(1.05,.64+.42*Math.max(0,n[0]*LD[0]+n[1]*LD[1]+n[2]*LD[2])+.12*Math.max(0,n[0]*L2[0]+n[1]*L2[1]+n[2]*L2[2])),al=q.a===undefined?1:q.a,cc=COL[q.c];
       const rgb=(f,a)=>'rgba('+Math.min(255,Math.round(cc[0]*k2*f))+','+Math.min(255,Math.round(cc[1]*k2*f))+','+Math.min(255,Math.round(cc[2]*k2*f+(1-k2)*16))+','+a+')';
       const pts=q.p.map(p=>pr(p[0],p[1],p[2]));
       g3.beginPath();pts.forEach((p,i)=>i?g3.lineTo(p[0],p[1]):g3.moveTo(p[0],p[1]));g3.closePath();
       let fs=rgb(1,al);
       if(q.ns&&n[2]===0&&al===1&&Math.hypot(pts[3][0]-pts[0][0],pts[3][1]-pts[0][1])>1.5){ // escurece de leve junto ao piso
-        const ao=z=>.8+.2*Math.min(1,Math.max(0,(z-q.e)/130)),gd=g3.createLinearGradient(pts[0][0],pts[0][1],pts[3][0],pts[3][1]);
+        const ao=z=>.86+.14*Math.min(1,Math.max(0,(z-q.e)/130)),gd=g3.createLinearGradient(pts[0][0],pts[0][1],pts[3][0],pts[3][1]);
         gd.addColorStop(0,rgb(ao(q.p[0][2]),1));gd.addColorStop(1,rgb(ao(q.p[3][2]),1));fs=gd}
       g3.fillStyle=fs;g3.fill();
       g3.strokeStyle=q.ns?fs:al<1?'rgba(60,110,140,.5)':'rgba(0,0,0,.24)';g3.stroke()}
