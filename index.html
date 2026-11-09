@@ -116,6 +116,10 @@ footer>span:first-child{flex:1;min-width:0}footer>span:last-child{white-space:no
 #c3{flex:1;min-height:0;width:100%;display:block;cursor:grab;background:var(--paper);touch-action:none}
 #c3.pan{cursor:move}
 #m3 .f3{padding:5px 12px;border-top:1px solid var(--line);color:var(--muted);font-size:12px}
+#dm{position:fixed;inset:0;z-index:50;background:rgba(0,0,0,.35);display:flex;align-items:center;justify-content:center}
+#dm .box{background:var(--bar);border:1px solid var(--line);border-radius:8px;width:min(340px,92vw);box-shadow:0 8px 32px rgba(0,0,0,.4)}
+#dmb{display:flex;flex-direction:column;gap:10px;padding:12px 14px}#dmb label{display:flex;justify-content:space-between;align-items:center;gap:10px}
+#dmb input{width:120px}#dm .dmf{display:flex;justify-content:flex-end;gap:8px;padding:10px 14px;border-top:1px solid var(--line)}#dm .dmf button{border-color:var(--line)}#dmo{background:var(--accent);color:#fff}
 .fm{position:fixed;z-index:35;width:290px;background:var(--bar);border:1px solid var(--line);border-radius:8px;box-shadow:0 8px 24px rgba(0,0,0,.35);padding:4px}
 .fm.sub{width:230px;z-index:36}
 .fi{display:flex;align-items:center;gap:12px;width:100%;padding:8px 12px;border-radius:4px;text-align:left;font-size:13px;position:relative}
@@ -342,6 +346,7 @@ footer>span:first-child{flex:1;min-width:0}footer>span:last-child{white-space:no
   <canvas id="c3"></canvas>
   <div class="f3">Arraste: girar · Shift + arrastar (ou botão direito): mover · Roda do mouse: zoom · Setas: girar · Esc: fechar</div>
 </div></div>
+<div id="dm" hidden><div class="box"><div class="qh"><b id="dmt"></b></div><div id="dmb"></div><div class="dmf"><button id="dmo">Aplicar</button><button id="dmc">Cancelar</button></div></div></div>
 <div id="qm" hidden><div class="box"><div class="qh"><b>Quantitativos</b><span><button id="qcsv">Baixar CSV</button><button id="qx">Fechar</button></span></div><div id="qb"></div></div></div>
 <select id="fsel" hidden aria-label="Tipo de móvel"></select>
 <div id="wheel" aria-label="Menu em roda"><i></i><button data-w="dim" title="Cota manual (C)">Cota</button><button data-w="area" title="Área do cômodo (A)">Área</button></div>
@@ -642,7 +647,7 @@ function updInsp(){const el=$('#insp'),key=sel?sel.k+sel.id:'';if(key===ik){sync
   const L={wall:S.walls,op:S.ops,furn:S.furn,label:S.labels,dim:S.dims,duct:S.ducts}[sel&&sel.k],o=L&&L.find(q=>q.id===sel.id);if(!o)return;
   const hd=document.createElement('div');hd.className='ph';hd.textContent=sel.k==='wall'?'Parede':sel.k==='op'?(o.type==='door'?'Porta':'Janela'):sel.k==='furn'?o.t:sel.k==='dim'?'Cota':sel.k==='duct'?(o.pk!==undefined?'Tubulação':'Eletroduto'):'Nome';el.append(hd);
   const num=(lb,get,set,mn,mx,st)=>{const lab=document.createElement('label'),i=document.createElement('input');lab.append(lb);
-    i.type='number';i.min=mn;i.max=mx;i.step=st||5;i.value=get();
+    i.type='number';i.min=mn;i.max=mx;i.step=st||1;i.value=get();
     i.onchange=()=>{const v=Math.min(mx,Math.max(mn,+i.value||mn));if(v!==get()){push();set(v);save();draw()}i.value=get()};
     igets.push([i,get]);lab.append(i);el.append(lab)};
   const btn=(t,fn)=>{const x=document.createElement('button');x.textContent=t;x.onclick=()=>{push();fn();save();draw()};el.append(x)};
@@ -659,7 +664,7 @@ function updInsp(){const el=$('#insp'),key=sel?sel.k+sel.id:'';if(key===ik){sync
   else if(sel.k==='furn'){
     num('Largura (cm)',()=>o.w,v=>{o.w=v},10,500);num('Profundidade (cm)',()=>o.h,v=>{o.h=v},10,500);
     btn('Girar 90°',()=>{o.r=(o.r+1)%4});
-    if(o.l!=='ele'&&o.l!=='hid'&&window.fh3){num('Altura na visão 3D (cm)',()=>o.z||window.fh3(o.t).h||+C().pd||270,v=>{o.z=v},5,400,5);num('Distância do chão (cm)',()=>o.e!==undefined?o.e:(window.fh3(o.t).e||0),v=>{o.e=v},0,250,5)}
+    if(o.l!=='ele'&&o.l!=='hid'&&window.fh3){num('Altura na visão 3D (cm)',()=>o.z||window.fh3(o.t).h||+C().pd||270,v=>{o.z=v},5,400,1);num('Distância do chão (cm)',()=>o.e!==undefined?o.e:(window.fh3(o.t).e||0),v=>{o.e=v},0,250,1)}
     if((o.l==='ele'||o.l==='hid')&&symOf(o)){const sy=symOf(o);
       if(sy.hyd){txt('Diâmetro / descrição (ex.: Ø25)',()=>o.p||'',v=>{o.p=v});if(sy.wall)num('Altura (mm)',()=>o.a||sy.alt||600,v=>{o.a=v},0,3000,50)}
       else{txt('Potência (ex.: 100 W)',()=>o.p||'',v=>{o.p=v});txt('Comando (a, b, c)',()=>o.k||'',v=>{o.k=v});txt('Circuito',()=>o.c===undefined||o.c===null?'':String(o.c),v=>{o.c=v});
@@ -1610,6 +1615,42 @@ window.addEventListener('keydown',e=>{
 },true);
 })();
 
+
+/* ===== 14. Duplo clique (Selecionar) abre caixa de medidas ===== */
+(function(){
+let DF=[];
+const close=()=>{$('#dm').hidden=true;DF=[]};
+function fields(k,o){
+  const F=[],nf=(lb,get,set,mn,mx,st)=>F.push({lb,get,set,mn,mx,st:st||1});
+  if(k==='wall'){nf('Comprimento (cm)',()=>f1(wLen(o)),v=>{const r=resizeWall(o,v,ANCH);if(Math.abs(r-v)>.05)flash('Comprimento mínimo: '+f1(r)+' cm, por causa das portas e janelas dessa parede.')},10,5000);nf('Espessura (cm)',()=>o.t||T,v=>{o.t=v},5,60)}
+  else if(k==='op')nf('Largura (cm)',()=>o.w,v=>setOpW(o,v),40,300);
+  else if(k==='furn'){nf('Largura (cm)',()=>o.w,v=>{o.w=v},10,500);nf('Profundidade (cm)',()=>o.h,v=>{o.h=v},10,500);
+    if(o.l!=='ele'&&o.l!=='hid'&&window.fh3){nf('Altura na visão 3D (cm)',()=>o.z||window.fh3(o.t).h||+C().pd||270,v=>{o.z=v},5,400);nf('Distância do chão (cm)',()=>o.e!==undefined?o.e:(window.fh3(o.t).e||0),v=>{o.e=v},0,250)}}
+  else if(k==='dim')nf('Comprimento (cm)',()=>f1(wLen(o)),v=>setDimLen(o,v),10,5000);
+  else if(k==='label')nf('Tamanho do texto (px)',()=>o.fs||15,v=>{o.fs=v},8,80);
+  else if(k==='duct'){if(o.pk!==undefined)nf('Diâmetro (mm)',()=>o.d||KP[o.pk].d,v=>{o.d=v},15,300,5);else nf('Diâmetro (mm)',()=>o.d||15,v=>{o.d=v},15,100,5)}
+  return F}
+function apply(){
+  const vals=DF.map(f=>Math.min(f.mx,Math.max(f.mn,+f.i.value||f.mn)));
+  if(DF.some((f,j)=>vals[j]!==f.get())){push();DF.forEach((f,j)=>{if(vals[j]!==f.get())f.set(vals[j])});save();ik=null;draw();updInsp()}
+  close()}
+function open(h,o){
+  const F=fields(h.k,o);if(!F.length)return;
+  const names={wall:'Parede',op:o.type==='door'?'Porta':'Janela',furn:o.t,dim:'Cota',label:'Texto',duct:o.pk!==undefined?'Tubulação':'Eletroduto'};
+  $('#dmt').textContent=names[h.k]+' — medidas';const b=$('#dmb');b.innerHTML='';
+  for(const f of F){const lab=document.createElement('label'),i=document.createElement('input');lab.append(f.lb);i.type='number';i.min=f.mn;i.max=f.mx;i.step=f.st;i.value=f.get();f.i=i;lab.append(i);b.append(lab)}
+  DF=F;$('#dm').hidden=false;F[0].i.focus();F[0].i.select()}
+cv.addEventListener('dblclick',e=>{
+  if(tool!=='select')return;
+  const[px,py]=evp(e),[rx,ry]=s2w(px,py),h=hit(rx,ry);if(!h)return;
+  const L={wall:S.walls,op:S.ops,furn:S.furn,label:S.labels,dim:S.dims,duct:S.ducts}[h.k],o=L&&L.find(q=>q.id===h.id);if(!o)return;
+  sel={k:h.k,id:h.id};ms=[];msBox=null;ik=null;draw();open(h,o)});
+$('#dmo').onclick=apply;$('#dmc').onclick=close;
+$('#dm').onclick=e=>{if(e.target.id==='dm')close()};
+window.addEventListener('keydown',e=>{if($('#dm').hidden)return;
+  if(e.key==='Escape')close();else if(e.key==='Enter'){e.preventDefault();apply()}
+  e.stopImmediatePropagation()},true);
+})();
 </script>
 </body>
 </html>
