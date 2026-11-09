@@ -129,6 +129,7 @@ footer>span:first-child{flex:1;min-width:0}footer>span:last-child{white-space:no
 .sw.empty:hover{outline:0}
 .rcw{position:relative;width:26px;height:26px;border-radius:50%;margin:0 4px 0 8px;flex:none;overflow:hidden;cursor:pointer;border:1px solid var(--line);background:conic-gradient(#f00,#ff0,#0f0,#0ff,#00f,#f0f,#f00)}
 .rcw input{position:absolute;inset:-6px;width:calc(100% + 12px);height:calc(100% + 12px);opacity:0;cursor:pointer;padding:0;border:0}
+.gcs{display:flex;flex:1;gap:10px}.gcs .gb{flex:none}
 .rrow{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted);white-space:nowrap}
 .rrow input[type=range]{width:90px;padding:0;margin:0}.rrow #ropv{width:34px;text-align:right}
 #rnm{width:130px;padding:2px 6px}
@@ -225,23 +226,23 @@ footer>span:first-child{flex:1;min-width:0}footer>span:last-child{white-space:no
       <label class="fld">Largura da porta (cm)<input type="number" data-cfg="dw" min="40" max="300" step="5"></label>
       <label class="fld">Largura da janela (cm)<input type="number" data-cfg="ww" min="40" max="300" step="5"></label>
     </div><div class="gl">Portas e janelas</div></div>
-    <div class="grp"><div class="gb col">
+    <div class="grp"><div class="gcs"><div class="gb col">
       <label class="fld">Nome do projeto<input type="text" data-cfg="pj" maxlength="40"></label>
       <label class="fld">Cliente<input type="text" data-cfg="cl" maxlength="40"></label>
     </div><div class="gb col">
       <label class="fld">Responsável<input type="text" data-cfg="au" maxlength="40"></label>
       <label class="fld">Escala / data<span class="two"><input type="text" data-cfg="es" maxlength="10" style="width:60px"><input type="text" data-cfg="dt" maxlength="12" style="width:84px"></span></label>
-    </div><div class="gl">Dados do projeto</div></div>
+    </div></div><div class="gl">Dados do projeto</div></div>
     <div class="grp"><div class="gb col">
       <label class="chk"><input type="checkbox" data-cfg="tb"> Mostrar carimbo na planta</label>
       <label class="chk"><input type="checkbox" data-cfg="lg"> Mostrar legenda</label>
     </div><div class="gl">Carimbo e legenda</div></div>
-    <div class="grp"><div class="gb col">
+    <div class="grp"><div class="gcs"><div class="gb col">
       <label class="fld">Papel<select data-cfg="pp"><option>A4</option><option>A3</option><option>A2</option><option>A1</option></select></label>
       <label class="fld">Orientação<select data-cfg="po"><option value="L">Paisagem</option><option value="P">Retrato</option></select></label>
     </div><div class="gb col">
       <label class="fld">Estilo da parede<select data-cfg="ws"><option value="0">Sólida</option><option value="1">Hachurada</option></select></label>
-    </div><div class="gl">Impressão (escala = campo Escala) e estilo</div></div>
+    </div></div><div class="gl">Impressão (escala = campo Escala) e estilo</div></div>
   </div>
 
   <div class="pn" id="pn-view">
@@ -1050,7 +1051,7 @@ $('#dup').onclick=()=>{if(!sel)return;
       {nb:'5.1',n:'Eletroduto embutido no teto ou parede',svg:dsv(0),col:'var(--ce)',test:()=>tool==='duct'&&dkind===0,pick:()=>{dkind=0;setTool('duct')}},
       {nb:'5.2',n:'Eletroduto embutido no piso',svg:dsv(1),col:'var(--ce)',test:()=>tool==='duct'&&dkind===1,pick:()=>{dkind=1;setTool('duct')}}],
     hid:[...symItems(true),{h:'Tubulações'},...KP.map((q,k)=>({n:q.n,svg:psv(q),col:q.c,test:()=>tool==='pipe'&&pkind===k,pick:()=>{pkind=k;setTool('pipe')}}))],
-    ann:[{n:'Nome do cômodo',svg:ic('text'),test:T_('text'),pick:()=>setTool('text')},{n:'Cota',svg:ic('dim'),test:T_('dim'),pick:()=>setTool('dim')},{n:'Área do cômodo',svg:ic('area'),test:T_('area'),pick:()=>setTool('area')}]};
+    ann:[{n:'Cota',svg:ic('dim'),test:T_('dim'),pick:()=>setTool('dim')},{n:'Área do cômodo',svg:ic('area'),test:T_('area'),pick:()=>setTool('area')}]};
   const first=(k,t)=>sets[k].find(i=>i.n&&(!t||i.n.includes(t)));
   const face={arq:{svg:ic('wall')},mov:{svg:ic('furn')},ele:{svg:symSVG(SY.tb),col:'var(--ce)'},hid:{svg:symSVG(SY.ha),col:'var(--ch)'},ann:{svg:ic('text')}};
   const setFace=k=>{document.querySelectorAll('.ddb[data-dd="'+k+'"]').forEach(b=>{const f=face[k];b.querySelector('.ic').innerHTML=f.svg;b.style.color=f.col||''})};
